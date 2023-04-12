@@ -380,7 +380,7 @@
 //!
 //! Since Rust doesn't provide built-in support for running initialization code before `main`,
 //! there is no way for `bevy_reflect` to automatically register types into the [type registry].
-//! This means types must manually be registered, including their desired monomorphized
+//! This means types must manually be registered, including their desired monomorphic
 //! representations if generic.
 //!
 //! # Features
@@ -435,6 +435,7 @@
 //! [orphan rule]: https://doc.rust-lang.org/book/ch10-02-traits.html#implementing-a-trait-on-a-type:~:text=But%20we%20can%E2%80%99t,implementation%20to%20use.
 //! [`bevy_reflect_derive/documentation`]: bevy_reflect_derive
 //! [derive `Reflect`]: derive@crate::Reflect
+#![allow(clippy::type_complexity)]
 
 mod array;
 mod fields;

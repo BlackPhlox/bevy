@@ -555,6 +555,10 @@ pub fn camera_system<T: CameraProjection + Component>(
                 }
             }
         }
+
+        if camera.computed.old_viewport_size != viewport_size {
+            camera.computed.old_viewport_size = viewport_size;
+        }
     }
 }
 
@@ -710,7 +714,7 @@ pub fn sort_cameras(
     }
 }
 
-/// A subpixel offset to jitter a perspective camera's fustrum by.
+/// A subpixel offset to jitter a perspective camera's frustum by.
 ///
 /// Useful for temporal rendering techniques.
 ///

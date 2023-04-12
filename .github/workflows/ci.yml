@@ -142,24 +142,73 @@ jobs:
           target: wasm32-unknown-unknown
       - name: Check wasm
         run: cargo check --target wasm32-unknown-unknown
-
-  markdownlint:
+  
+  # GitHub Community Discussions : How to get commit message on pull_request workflow? #28474 
+  # https://github.com/orgs/community/discussions/28474#discussioncomment-3334578
+  check-skip-flags:
+    runs-on: ubuntu-latest
+    outputs:
+      head-commit-message: ${{ steps.get_head_commit_message.outputs.headCommitMsg }}
+    steps:
+      - name: Get repo
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Print head git commit message
+        id: display_head_commit_message
+        run: echo "Head commit message - $(git show -s --format=%s)"
+      - name: Print head git commit message
+        id: get_head_commit_message
+        run: echo "headCommitMsg=$(git show -s --format=%s)" >> $GITHUB_OUTPUT
+ 
+  # Run locally by running the following commands in the root of bevy, need docker installed:
+  # - npm install mega-linter-runner -g
+  # - mega-linter-runner -f documentation -e 'MEGALINTER_CONFIG=.github/linters/.mega-linter.yml' --remove-container
+  # This gonna download the lint image with a size of 1.78 gb locally on your device and run the linter, see the results in /megalinter-reports
+  # Notice: You might have to restart docker if you cancel the linting process prematurely
+  # For more info see: https://megalinter.io/latest/mega-linter-runner
+  markdownlint-and-spellcheck:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: check-missing-features-in-docs
+    needs: [check-missing-features-in-docs, check-skip-flags]
     if: always()
     steps:
       - uses: actions/checkout@v3
         with:
-          # Full git history is needed to get a proper list of changed files within `super-linter`
+          # Full git history is needed to get a proper list of changed files within `mega-linter`
           fetch-depth: 0
-      - name: Run Markdown Lint
-        uses: docker://ghcr.io/github/super-linter:slim-v4
+
+      - name: Parse latest commit message and set variables
+        id: latest_commit
+        run: |
+          if [$SPELL_CHECK]
+          then
+              echo "filter=PHP" >> $GITHUB_OUTPUT
+          else
+              echo "filter=SPELL" >> $GITHUB_OUTPUT
+          fi
+          if [$VALIDATE_ALL]
+          then
+              echo "validate_all=true" >> $GITHUB_OUTPUT
+          else
+              echo "validate_all=false" >> $GITHUB_OUTPUT
+          fi
         env:
-          MULTI_STATUS: false
-          VALIDATE_ALL_CODEBASE: false
-          VALIDATE_MARKDOWN: true
-          DEFAULT_BRANCH: main
+          SPELL_CHECK: ${{ contains(needs.check-skip-flags.outputs.head-commit-message, '[spellcheck]') }}
+          VALIDATE_ALL: ${{ contains(needs.check-skip-flags.outputs.head-commit-message, '[lint-all]') }}
+      
+      - name: Run Markdown & Spelling lints
+        id: ml
+        # More info at https://megalinter.io/flavors/
+        uses: oxsecurity/megalinter/flavors/documentation@v6.22.2 # docker://ghcr.io/github/oxsecurity/megalinter-documentation:v6.22.2 # oxsecurity/megalinter/flavors/rust@v6
+        env:
+          # All available variables are described in documentation
+          # https://megalinter.io/configuration/
+          MEGALINTER_CONFIG: ".github/linters/.mega-linter.yml"
+          # Validates all source when push on main, else just the git diff with main. Set 'true' if you always want to lint all sources
+          VALIDATE_ALL_CODEBASE: ${{ steps.latest_commit.outputs.validate_all }} 
+          # ADD YOUR CUSTOM ENV VARIABLES HERE TO OVERRIDE VALUES OF .mega-linter.yml
+          DISABLE_LINTERS : ${{ steps.latest_commit.outputs.filter }}
 
   run-examples:
     runs-on: ubuntu-latest

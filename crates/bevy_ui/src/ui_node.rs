@@ -309,7 +309,7 @@ pub struct Style {
     ///     ..Default::default()
     /// };
     /// ```
-    /// A node with this style and a parent with dimensions of 100px by 300px, will have calculated margins of 10px on both left and right edges, and 15px on both top and bottom egdes.
+    /// A node with this style and a parent with dimensions of 100px by 300px, will have calculated margins of 10px on both left and right edges, and 15px on both top and bottom edges.
     pub margin: UiRect,
     /// The amount of space between the edges of a node and its contents.
     ///
@@ -493,7 +493,7 @@ pub enum AlignContent {
     /// Each line will stretch to fill the remaining space.
     Stretch,
     /// Each line fills the space it needs, putting the remaining space, if any
-    /// inbetween the lines.
+    /// in-between the lines.
     SpaceBetween,
     /// The gap between the first and last items is exactly THE SAME as the gap between items.
     /// The gaps are distributed evenly.

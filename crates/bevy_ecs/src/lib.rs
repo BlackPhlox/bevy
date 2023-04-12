@@ -1,4 +1,5 @@
 #![warn(clippy::undocumented_unsafe_blocks)]
+#![allow(clippy::type_complexity)]
 #![doc = include_str!("../README.md")]
 
 #[cfg(target_pointer_width = "16")]
@@ -1346,7 +1347,7 @@ mod tests {
     }
 
     #[test]
-    fn query_filters_dont_collide_with_fetches() {
+    fn query_filters_do_not_collide_with_fetches() {
         let mut world = World::new();
         world.query_filtered::<&mut A, Changed<A>>();
     }

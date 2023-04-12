@@ -1670,7 +1670,7 @@ path = "examples/ecs/nondeterministic_system_order.rs"
 
 [package.metadata.example.nondeterministic_system_order]
 name = "Nondeterministic System Order"
-description = "Systems run in paralell, but their order isn't always deteriministic. Here's how to detect and fix this."
+description = "Systems run in parallel, but their order isn't always deterministic. Here's how to detect and fix this."
 category = "ECS (Entity Component System)"
 wasm = false
 
@@ -1904,10 +1904,10 @@ path = "tests/window/resizing.rs"
 hidden = true
 
 [[example]]
-name = "minimising"
-path = "tests/window/minimising.rs"
+name = "minimizing"
+path = "tests/window/minimizing.rs"
 
-[package.metadata.example.minimising]
+[package.metadata.example.minimizing]
 hidden = true
 
 [[example]]

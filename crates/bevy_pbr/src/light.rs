@@ -124,7 +124,7 @@ impl SpotLight {
 
 impl Default for SpotLight {
     fn default() -> Self {
-        // a quarter arc attenuating from the centre
+        // a quarter arc attenuating from the center
         Self {
             color: Color::rgb(1.0, 1.0, 1.0),
             /// Luminous power in lumens
@@ -551,7 +551,7 @@ fn calculate_cascade(
 
     // It is critical for `world_to_cascade` to be stable. So rather than forming `cascade_to_world`
     // and inverting it, which risks instability due to numerical precision, we directly form
-    // `world_to_cascde` as the reference material suggests.
+    // `world_to_cascade` as the reference material suggests.
     let light_to_world_transpose = light_to_world.transpose();
     let world_to_cascade = Mat4::from_cols(
         light_to_world_transpose.x_axis,
@@ -2197,7 +2197,7 @@ mod test {
 
     #[test]
     // check tiling for small screen sizes
-    fn test_default_cluster_setup_small_screensizes() {
+    fn test_default_cluster_setup_small_screen_sizes() {
         for x in 1..100 {
             for y in 1..100 {
                 let screen_size = UVec2::new(x, y);
